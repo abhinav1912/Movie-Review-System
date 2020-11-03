@@ -2,15 +2,20 @@ from django.contrib.auth.models import User
 from djongo import models
 
 class Movie(models.Model):
-    _id = models.ObjectIdField()
     name = models.CharField(max_length=100)
+    genre = models.CharField(max_length=100)
+    language = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    synposis = models.TextField()
     rating = models.IntegerField()
     release_date = models.DateField()
+    poster_link = models.TextField()
+    trailer_link = models.TextField()
 
 class Review(models.Model):
     title = models.CharField(max_length=100)
     date = models.DateField()
     text = models.CharField(max_length=150)
     rating = models.IntegerField()
-    movie = models.EmbeddedField(model_container=Movie, null=False, blank=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, related_name='reviews', on_delete = models.CASCADE)
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
