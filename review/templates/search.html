@@ -1,27 +1,108 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/movie-cards.css' %}">
+    <style>
+        .dropdown-label {
+            float: left;
+            display: block!important;
+        }
+    </style>
+{% endblock styles %}
+
 {% block content %}
-    <br>
-    <h1>Search Page</h1>
-    <form action="/search/" method="post">
-        {% csrf_token %}
-            <input type="text" name="name" id="name_input" value = "any">
-            <label for="name_input">Name</label><br>
-
-            <input type="text" name="genre" id="genre_input" value = "any">
-            <label for="genre_input">Genre</label><br>
-
-            <input type="text" name="language" id="language_input" value = "any">
-            <label for="language_input">Language</label><br>
-            
-            <input type="number" name="rating" id="rating_input" value = 0>
-            <label for="rating_input">Rating</label><br>
-
-            <input type="date" name="date_start" id="date_input_start" value = "1900-01-01">
-            <label for="date_input_start">Start Date</label><br>
-
-            <input type="date" name="date_end" id="date_input_end" value = "2200-01-01">
-            <label for="date_input_end">End Date</label><br>
-            
-        <input type="submit" value="Vote">
-    </form>
-{% endblock %}
+<div class="container">
+        <div class="row">
+            <form class="form-inline w-100" method="POST" action="/search/">
+                {% csrf_token %}
+                <div class="col-12">
+                    <div class="row align-items-center mt-4">
+                        <div class="col-xl-11 col-10 pr-1">
+                            <input type="text" id="query_string" class="form-control w-100" name="name" autofocus>
+                        </div>
+                        <div class="col-xl-1 col-2 pl-0">
+                            <button type="submit" id="submit_form" class="btn btn-primary w-100">Search</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="row mt-3 text-light">
+                        <div class="col">
+                            <label class="dropdown-label mb-2">Genre: -</label>
+                            <select class="form-control w-100" id="genre-item" name="genre">
+                                <option selected value="any">All</option>
+                                <option value="Action">Action</option>
+                                <option value="Adventure">Adventure</option>
+                                <option value="Drama">Drama</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="dropdown-label mb-2">Rating: -</label>
+                            <select class="form-control w-100" name="rating">
+                                <option selected value="0">All</option>
+                                <option value="1">1+</option>
+                                <option value="2">2+</option>
+                                <option value="3">3+</option>
+                                <option value="4">4+</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="dropdown-label mb-2">Start Date: -</label>
+                            <input type="date" class="form-control" name="date_start" value = "1900-01-01"/>
+                        </div>
+                        <div class="col">
+                            <label class="dropdown-label mb-2">End Date: -</label>
+                            <input type="date" class="form-control" name="date_end" value = "2200-01-01"/>
+                        </div>
+                        <div class="col">
+                            <label class="dropdown-label mb-2">Languages: -</label>
+                            <select class="form-control w-100" name="language">
+                                <option selected value="any">All</option>
+                                <option value="english">English</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row mt-5" id="movie-grid">
+            {% for movie in searched_movies %}
+                <div class="col-md-4 col-sm-6 col-lg-3 eachMovie">
+                    <div style="text-align: center;">
+                        <button data-toggle="modal" data-target="#movie_{{movie.id}}" type="button" class="img-button">
+                            <img src="{{movie.poster_link}}" class="img-fluid each_img round-corners mb-2" id="img_1">
+                        </button>
+                        <a href="{% url 'movie' movie.id %}" class="text-light mb-4 h5 visit-link">{{ movie.name|title }}</a></p>
+                    </div>
+                    <div class="modal fade" id="movie_{{movie.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content col-sm-12">
+                                <div class="row pt-4">
+                                    <div class="col-sm-6 moviePosterInModal" style="text-align: center;">
+                                        <a href="{{movie.trailer_link}}"><img src="{{movie.poster_link}}" class="img-fluid round-corners modal-img"></a>
+                                        <a href="{% url 'movie' movie.id %}" class="mb-4 h6 visit-link">Visit Page</a></p>
+                                    </div>
+                                    <br>
+                                    <div class="col-sm-6 movieDetails">
+                                        <div class="movieName"><h5>{{movie.name|title}}</h5></div><br>
+                                        <div class="linkToTrailer">
+                                            <a href="{{movie.trailer_link}}"><i class="fas fa-play"></i>&nbspPlay trailer</a>
+                                        </div><br>
+                                        <div class="release">Release Date:  {{movie.release_date}}</div><br>
+                                        <div class="overview">{{movie.synposis|slice:"100"}}...</div><br>
+                                        {% if movie.rating != 0 %}
+                                            <div class="rating"><em><strong>Rating: {{movie.rating}}/5</strong></em></div><br>
+                                        {% else %}
+                                            <div class="rating"><em><strong>Rating: Unrated</strong></em></div><br>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}		
+        </div>
+    </div>
+{% endblock content %}
