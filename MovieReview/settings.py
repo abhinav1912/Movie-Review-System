@@ -51,6 +51,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'MovieReview.urls'
+STATIC_URL = os.path.join(BASE_DIR, "static/")
 
 TEMPLATES = [
     {
