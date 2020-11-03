@@ -78,7 +78,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'CLIENT': {
-            'name': 'Reviews',
+            'name': 'MovieRatingsApp',
             'host': 'mongodb+srv://project_admin:dtukmkb1@cluster0.ofc9b.mongodb.net/Reviews?retryWrites=true&w=majority',
             'username': 'project_admin',
             'password': 'dtukmkb1',
