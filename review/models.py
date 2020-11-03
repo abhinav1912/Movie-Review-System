@@ -7,7 +7,7 @@ class Movie(models.Model):
     language = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
     synposis = models.TextField()
-    rating = models.IntegerField()
+    rating = models.FloatField()
     release_date = models.DateField()
     poster_link = models.TextField()
     trailer_link = models.TextField()
