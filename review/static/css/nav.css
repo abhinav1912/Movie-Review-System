@@ -1,0 +1,19 @@
+.nav-link:hover{
+	border-bottom: 2px solid white!important;
+}
+.nav-link {
+	border-bottom: 2px solid #343a40;
+	margin-bottom: 3px;
+	margin-right: 5px;
+	margin-left: 5px
+}
+.nav-item.active > a{
+	border-bottom: 2px solid white;
+}
+
+.show > .navbar-nav > .nav-item > .navlink {
+	border-bottom: 2px solid #343a40;
+	margin-bottom: 3px;
+	margin-right: 5px;
+	margin-left: 5px
+}

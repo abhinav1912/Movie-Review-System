@@ -1,0 +1,12 @@
+.info {
+    margin-top: 0.8rem;
+}
+.info > p, .info > h5 {
+    display: inline;
+}
+#addToFav, #add-review{
+    float: right;
+}
+#add-review {
+    font-size: 1.25rem;
+}
