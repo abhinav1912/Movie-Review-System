@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+    <br>
+    <h1>Search Page</h1>
+    <form action="/search/" method="post">
+        {% csrf_token %}
+            <input type="text" name="name" id="name_input" value = "any">
+            <label for="name_input">Name</label><br>
+
+            <input type="text" name="genre" id="genre_input" value = "any">
+            <label for="genre_input">Genre</label><br>
+
+            <input type="text" name="language" id="language_input" value = "any">
+            <label for="language_input">Language</label><br>
+            
+            <input type="number" name="rating" id="rating_input" value = 0>
+            <label for="rating_input">Rating</label><br>
+
+            <input type="date" name="date_start" id="date_input_start" value = "1900-01-01">
+            <label for="date_input_start">Start Date</label><br>
+
+            <input type="date" name="date_end" id="date_input_end" value = "2200-01-01">
+            <label for="date_input_end">End Date</label><br>
+            
+        <input type="submit" value="Vote">
+    </form>
+{% endblock %}
