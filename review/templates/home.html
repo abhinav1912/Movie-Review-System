@@ -2,4 +2,16 @@
 {% block content %}
     <br>
     <h1>Home Page</h1>
+    <h3>Current Movies</h3>
+    <ul> 
+        {% for movie in current_movies %} 
+            <li>{{ movie.name }} : <a href="{{movie.trailer_link}}">Trailer Link</a> : <a href="{{movie.poster_link}}">Poster Link</a></li> 
+        {% endfor %} 
+    </ul>
+    <h3>Upcoming Movies</h3>
+    <ul> 
+        {% for movie in upcoming_movies %} 
+        <li>{{ movie.name }} : <a href="{{movie.trailer_link}}">Trailer Link</a> : <a href="{{movie.poster_link}}">Poster Link</a></li> 
+        {% endfor %} 
+    </ul>
 {% endblock %}
