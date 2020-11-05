@@ -11,6 +11,7 @@
 .carousel-caption > a {
     color: white;
 }
+
 #mainCarousel{
     display: none;
 }
@@ -22,6 +23,6 @@
 }
 @media (min-width: 768px) {
     #mainContent {
-        max-height: 500px;
+        max-height: 768px;
     }
 }

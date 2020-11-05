@@ -20,7 +20,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
-                {% if  page_title == "Home" %}
+                {% if  page_url == "home" %}
                     <li class="nav-item active">
                         <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                     </li>
@@ -30,7 +30,7 @@
                     </li>
                 {% endif %}
 
-                {% if page_title == "Browse" %}
+                {% if page_url == "browse" %}
                     <li class="nav-item active">
                         <a class="nav-link" href="/search">Browse <span class="sr-only">(current)</span></a>
                     </li>
@@ -43,7 +43,7 @@
                 
             </ul>
             <ul class="navbar-nav">
-                {% if page_title == "Favourites" or page_title == "Reviews" %}
+                {% if page_url == "favourites" or page_url == "reviews" %}
                     <li class="nav-item dropdown active">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             My Account
@@ -80,7 +80,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div class="alert alert-danger" role="alert" id="registerAlert">This is an alert</div>
+                                {% comment %} <div class="alert alert-danger" role="alert" id="registerAlert">This is an alert</div> {% endcomment %}
                                 <form action="" method="" id="registerForm">
                                     <div class="form-group row">
                                         <label for="first_name" class="col-md-4 col-form-label text-md-right">First Name</label>
@@ -140,7 +140,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div class="alert alert-danger" role="alert" id="loginAlert">This is an alert</div>
+                                {% comment %} <div class="alert alert-danger" role="alert" id="loginAlert">This is an alert</div> {% endcomment %}
                                 <form action="" method="">
                                     <div class="form-group row">
                                         <label for="email_address" class="col-md-4 col-form-label text-md-right">User Name/Email</label>

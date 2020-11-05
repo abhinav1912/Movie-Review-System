@@ -51,7 +51,7 @@
 			</div>
 		</div>
 		<div class="col-lg-3 col-md-4 col-sm-12 scroll mt-4" id="upcoming">
-			<div class="card bg-dark text-light">
+			<div class="card bg-dark text-light h-100">
 				<div class="card-header">
 					<h5>Upcoming Movies</h5>
 				</div>
@@ -76,7 +76,7 @@
 		</div>
 	</div>
     <br>
-	<div id="movie-display mt-4">
+	<div id="movie-display">
 		<div class="container">
 			<div class="row mt-4" id="movie-grid">
 				{% for movie in current_movies %}
@@ -97,12 +97,12 @@
 										</div>
 										<br>
 										<div class="col-sm-6 movieDetails">
-											<div class="movieName"><h5>{{movie.name|title}}</h5></div><br>
+											<div class="movieName"><a href="{% url 'movie' movie.id %}"><h5>{{movie.name|title}}</h5></a></div><br>
 											<div class="linkToTrailer">
 												<a href="{{movie.trailer_link}}"><i class="fas fa-play"></i>&nbspPlay trailer</a>
 											</div><br>
 											<div class="release">Release Date:  {{movie.release_date}}</div><br>
-											<div class="overview">{{movie.synposis|slice:"100"}}...</div><br>
+											<div class="overview">{{movie.synposis|truncatewords:25}}...</div><br>
 											{% if movie.rating != 0 %}
 												<div class="rating"><em><strong>Rating: {{movie.rating}}/5</strong></em></div><br>
 											{% else %}
