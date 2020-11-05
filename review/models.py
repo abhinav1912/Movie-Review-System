@@ -12,6 +12,11 @@ class Movie(models.Model):
     poster_link = models.TextField()
     trailer_link = models.TextField()
 
+    def save(self, *args, **kwargs):
+        self.genre = self.genre.lower()
+        self.language = self.language.lower()
+        return super(Movie, self).save(*args, **kwargs)
+
 class Review(models.Model):
     title = models.CharField(max_length=100)
     date = models.DateField()
