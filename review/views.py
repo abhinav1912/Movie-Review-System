@@ -5,20 +5,12 @@ from .models import Movie
 from datetime import datetime
 
 def home(request):
-    movies = Movie.objects.all()
-    upcoming_movies = []
-    current_movies = []
-    for movie in movies:
-        if movie.release_date <= datetime.date(datetime.now()):
-            current_movies.append(movie)
-        else:
-            upcoming_movies.append(movie)
-    
+    upcoming_movies = Movie.objects.filter(release_date__gte = datetime.date(datetime.now()))
+    current_movies = Movie.objects.filter(release_date__lt = datetime.date(datetime.now()))
     context = {}
     context["page_url"] = "home"
     context["upcoming_movies"] = upcoming_movies
-    context["current_movies"] = current_movies
-
+    context["current_movies"] = current_movies.order_by('-rating', 'name')
     return render(request, "index.html", context)
 
 def feed(request):
@@ -30,12 +22,11 @@ def search(request):
     context["movie_genres"] = list(Movie.objects.values_list('genre', flat=True).distinct().order_by('genre'))
     context["movie_languages"] = list(Movie.objects.values_list('language', flat=True).distinct().order_by('language'))
     if request.method == "GET":
-        context["searched_movies"] = Movie.objects.all()
+        context["searched_movies"] = Movie.objects.all().order_by('name')
         context["search_form"] = {}
         return render(request, "search.html", context)
 
     elif request.method == "POST":
-        # print(request.POST)
 
         movies_names = movies_genres = movies_year_start = movies_year_end = movies_language = movies_rating = Movie.objects.all()
 
@@ -59,10 +50,7 @@ def search(request):
 
         searched_movies = movies_names & movies_genres & movies_year_start & movies_year_end & movies_language & movies_rating
 
-        # for movie in searched_movies:
-        #     print(movie.name)
-        
-        context["searched_movies"] = searched_movies
+        context["searched_movies"] = searched_movies.order_by('name')
         context["search_form"] = request.POST
 
         return render(request, "search.html", context)
