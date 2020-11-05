@@ -30,22 +30,22 @@ def search(request):
 
         movies_names = movies_genres = movies_year_start = movies_year_end = movies_language = movies_rating = Movie.objects.all()
 
-        if(request.POST["name"]!=''):
+        if request.POST["name"]:
             movies_names = Movie.objects.filter(name__icontains = request.POST["name"])
 
-        if(request.POST["genre"]!='any'):
+        if request.POST["genre"] != 'any':
             movies_genres = Movie.objects.filter(genre = request.POST["genre"])
 
-        if(request.POST["date_start"]!=''):
+        if request.POST["date_start"]:
             movies_year_start = Movie.objects.filter(release_date__gte = request.POST["date_start"])
         
-        if(request.POST["date_end"]!=''):
+        if request.POST["date_end"]:
             movies_year_end = Movie.objects.filter(release_date__lte = request.POST["date_end"])
 
-        if(request.POST["language"]!='any'):
+        if request.POST["language"] != 'any':
             movies_language = Movie.objects.filter(language = request.POST["language"])
 
-        if(request.POST["rating"]!='0'):
+        if request.POST["rating"] != '0':
             movies_rating = Movie.objects.filter(rating__gte = float(request.POST["rating"]))
 
         searched_movies = movies_names & movies_genres & movies_year_start & movies_year_end & movies_language & movies_rating
