@@ -19,7 +19,7 @@
                 <div class="col-12">
                     <div class="row align-items-center mt-4">
                         <div class="col-xl-11 col-10 pr-1">
-                            <input type="text" id="query_string" class="form-control w-100" name="name" autofocus>
+                            <input type="text" id="query_string" class="form-control w-100" name="name" value="{{search_form.name|default:''}}">
                         </div>
                         <div class="col-xl-1 col-2 pl-0">
                             <button type="submit" id="submit_form" class="btn btn-primary w-100">Search</button>
@@ -31,35 +31,60 @@
                         <div class="col">
                             <label class="dropdown-label mb-2">Genre: -</label>
                             <select class="form-control w-100" id="genre-item" name="genre">
-                                <option selected value="any">All</option>
-                                <option value="Action">Action</option>
-                                <option value="Adventure">Adventure</option>
-                                <option value="Drama">Drama</option>
-                            </select>
+                                {% if search_form.genre and search_form.genre in movie_genres %}
+                                    <option value="any">All</option>
+                                {% else %}
+                                    <option selected value="any">All</option>
+                                {% endif %}
+                                {% for genre in movie_genres %}
+                                    {% if search_form.genre and search_form.genre == genre %}
+                                        <option selected value="{{genre|lower}}">{{genre|lower|capfirst}}</option>
+                                    {% else %}
+                                        <option value="{{genre|lower}}">{{genre|lower|capfirst}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>                            
                         </div>
                         <div class="col">
                             <label class="dropdown-label mb-2">Rating: -</label>
                             <select class="form-control w-100" name="rating">
-                                <option selected value="0">All</option>
-                                <option value="1">1+</option>
-                                <option value="2">2+</option>
-                                <option value="3">3+</option>
-                                <option value="4">4+</option>
+                                {% if search_form.rating and search_form.rating == "0" %}
+                                    <option selected value="0">All</option>
+                                {% else %}
+                                    <option value="0">All</option>
+                                {% endif %}
+                                {% for i in "x"|rjust:"4"|make_list %}
+                                    {% if search_form.rating and search_form.rating == forloop.counter|stringformat:"i" %}
+                                        <option selected value="{{forloop.counter}}">{{forloop.counter}}+</option> 
+                                    {% else %}
+                                        <option value="{{forloop.counter}}">{{forloop.counter}}+</option> 
+                                    {% endif %}   
+                                {% endfor %} 
                             </select>
                         </div>
                         <div class="col">
                             <label class="dropdown-label mb-2">Start Date: -</label>
-                            <input type="date" class="form-control" name="date_start" value = "1900-01-01"/>
+                            <input type="date" class="form-control" name="date_start" value = "{{search_form.date_start|default:''}}"/>
                         </div>
                         <div class="col">
                             <label class="dropdown-label mb-2">End Date: -</label>
-                            <input type="date" class="form-control" name="date_end" value = "2200-01-01"/>
+                            <input type="date" class="form-control" name="date_end" value = "{{search_form.date_end|default:''}}"/>
                         </div>
                         <div class="col">
                             <label class="dropdown-label mb-2">Languages: -</label>
                             <select class="form-control w-100" name="language">
-                                <option selected value="any">All</option>
-                                <option value="english">English</option>
+                                {% if search_form.genre and search_form.language in movie_languages %}
+                                    <option value="any">All</option>
+                                {% else %}
+                                    <option selected value="any">All</option>
+                                {% endif %}
+                                {% for language in movie_languages %}
+                                    {% if search_form.language and search_form.language == language %}
+                                        <option selected value="{{language|lower}}">{{language|lower|capfirst}}</option>
+                                    {% else %}
+                                        <option value="{{language|lower}}">{{language|lower|capfirst}}</option>
+                                    {% endif %}
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
@@ -67,6 +92,7 @@
             </form>
         </div>
         <div class="row mt-5" id="movie-grid">
+        {% if searched_movies|length > 0 %}
             {% for movie in searched_movies %}
                 <div class="col-md-4 col-sm-6 col-lg-3 eachMovie">
                     <div style="text-align: center;">
@@ -85,7 +111,7 @@
                                     </div>
                                     <br>
                                     <div class="col-sm-6 movieDetails">
-                                        <div class="movieName"><h5>{{movie.name|title}}</h5></div><br>
+                                        <div class="movieName"><a href="{% url 'movie' movie.id %}"><h5>{{movie.name|title}}</h5></a></div><br>
                                         <div class="linkToTrailer">
                                             <a href="{{movie.trailer_link}}"><i class="fas fa-play"></i>&nbspPlay trailer</a>
                                         </div><br>
@@ -102,7 +128,11 @@
                         </div>
                     </div>
                 </div>
-            {% endfor %}		
+            {% endfor %}	
+        {% else %}
+            <h4 class="text-light mx-auto"><i>No results found</i></h4>
+        {% endif %}
+            	
         </div>
     </div>
 {% endblock content %}
