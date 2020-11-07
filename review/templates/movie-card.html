@@ -1,4 +1,4 @@
-<div class="col-md-4 col-sm-6 col-lg-3 eachMovie">
+<div class="col-md-4 col-6 col-lg-3 eachMovie">
     <div style="text-align: center;">
         <button data-toggle="modal" data-target="#movie_{{movie.id}}" type="button" class="img-button">
             <img src="{{movie.poster_link}}" class="img-fluid each_img round-corners mb-2" id="img_1">
@@ -13,7 +13,7 @@
                         &times;
                     </button>
                 </div>
-                <div class="row pt-4">
+                <div class="row pt-sm-2 pt-4">
                     <div class="col-sm-6 moviePosterInModal" style="text-align: center;">
                         <a href="{{movie.trailer_link}}"><img src="{{movie.poster_link}}" class="img-fluid round-corners modal-img"></a>
                         <a href="{% url 'movie' movie.id %}" class="mb-4 h6 visit-link">Visit Page</a></p>
