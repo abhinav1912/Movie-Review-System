@@ -18,6 +18,10 @@
 .scroll {
     overflow-y: auto;
 }
+#browse_upcoming:focus {
+    outline: none!important;
+    box-shadow: none;
+}
 #upcoming {
     max-height: inherit;
 }

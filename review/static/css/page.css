@@ -11,3 +11,7 @@ body {
 .round-corners{
     border-radius: 10px;
 }
+.close:focus {
+    outline: none!important;
+    box-shadow: none;
+}
