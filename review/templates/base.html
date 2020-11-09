@@ -43,143 +43,148 @@
                 
             </ul>
             <ul class="navbar-nav">
-                {% if page_url == "favourites" or page_url == "reviews" %}
-                    <li class="nav-item dropdown active">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            My Account
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">My Reviews</a>
-                        <a class="dropdown-item" href="#">Favourites</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Logout</a>
-                        </div>
-                    </li>
+                {% if user.is_authenticated %}
+                    {% if page_url == "favourites" or page_url == "reviews" %}
+                        <li class="nav-item dropdown active">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                My Account
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">My Reviews</a>
+                            <a class="dropdown-item" href="#">Favourites</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Logout</a>
+                            </div>
+                        </li>
+                    {% else %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                My Account
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">My Reviews</a>
+                            <a class="dropdown-item" href="#">Favourites</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Logout</a>
+                            </div>
+                        </li>
+                    {% endif %}       
                 {% else %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            My Account
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">My Reviews</a>
-                        <a class="dropdown-item" href="#">Favourites</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Logout</a>
+                    <li class="nav-item">
+                        <a class="nav-link account-buttons" href="javascript:void(0)" data-toggle="modal" data-target="#registerModal">Register</a>
+                        <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Register</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% comment %} <div class="alert alert-danger" role="alert" id="registerAlert">This is an alert</div> {% endcomment %}
+                                        <form action="/register" method="POST" id="registerForm">
+                                            <div class="form-group row">
+                                                <label for="first_name" class="col-md-4 col-form-label text-md-right">First Name</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" id="first_name" class="form-control" name="first-name" required autofocus>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="last_name" class="col-md-4 col-form-label text-md-right">Last Name</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" id="last_name" class="form-control" name="last-name" required autofocus>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="email_address" class="col-md-4 col-form-label text-md-right">Email Address</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" id="email_address" class="form-control" name="email-address" required autofocus>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="user_id" class="col-md-4 col-form-label text-md-right">User Name</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" id="user_id" class="form-control" name="user-id" required autofocus>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="r_password" class="col-md-4 col-form-label text-md-right">Password</label>
+                                                <div class="col-md-8">
+                                                    <input type="password" id="r_password" class="form-control" name="password" required>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="cnf_password" class="col-md-4 col-form-label text-md-right">Confirm Password</label>
+                                                <div class="col-md-8">
+                                                    <input type="password" id="cnf_password" class="form-control" name="cnf-password" required>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" value="{{next_url|default:'/'}}" name="next" id="next" class="d-none"/>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary" form="registerForm">Register</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </li>
-                {% endif %}       
-                <li class="nav-item">
-                    <a class="nav-link account-buttons" href="javascript:void(0)" data-toggle="modal" data-target="#registerModal">Register</a>
-                    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Register</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                {% comment %} <div class="alert alert-danger" role="alert" id="registerAlert">This is an alert</div> {% endcomment %}
-                                <form action="" method="" id="registerForm">
-                                    <div class="form-group row">
-                                        <label for="first_name" class="col-md-4 col-form-label text-md-right">First Name</label>
-                                        <div class="col-md-8">
-                                            <input type="text" id="first_name" class="form-control" name="first-name" required autofocus>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="last_name" class="col-md-4 col-form-label text-md-right">Last Name</label>
-                                        <div class="col-md-8">
-                                            <input type="text" id="last_name" class="form-control" name="last-name" required autofocus>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="email_address" class="col-md-4 col-form-label text-md-right">Email Address</label>
-                                        <div class="col-md-8">
-                                            <input type="text" id="email_address" class="form-control" name="email-address" required autofocus>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="user_id" class="col-md-4 col-form-label text-md-right">User Name</label>
-                                        <div class="col-md-8">
-                                            <input type="text" id="user_id" class="form-control" name="user-id" required autofocus>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
-                                        <div class="col-md-8">
-                                            <input type="password" id="password" class="form-control" name="password" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="cnf_password" class="col-md-4 col-form-label text-md-right">Confirm Password</label>
-                                        <div class="col-md-8">
-                                            <input type="password" id="cnf_password" class="form-control" name="cnf-password" required>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Register</button>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link account-buttons" href="javascript:void(0)" data-toggle="modal" data-target="#loginModal">Login</a>
-                    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Login</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                {% comment %} <div class="alert alert-danger" role="alert" id="loginAlert">This is an alert</div> {% endcomment %}
-                                <form action="" method="">
-                                    <div class="form-group row">
-                                        <label for="email_address" class="col-md-4 col-form-label text-md-right">User Name/Email</label>
-                                        <div class="col-md-8">
-                                            <input type="text" id="email_address" class="form-control" name="email-address" required autofocus>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
-                                        <div class="col-md-8">
-                                            <input type="password" id="password" class="form-control" name="password" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row pb-2 mb-0">
-                                        <div class="col-md-6 offset-md-4">
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox" name="remember"> Remember Me
-                                                </label>
+                    <li class="nav-item">
+                        <a class="nav-link account-buttons" href="javascript:void(0)" data-toggle="modal" data-target="#loginModal">Login</a>
+                        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    {% comment %} <div class="alert alert-danger" role="alert" id="loginAlert">This is an alert</div> {% endcomment %}
+                                    <form action="/login" method="GET" id="loginForm">
+                                        <div class="form-group row">
+                                            <label for="email_address" class="col-md-4 col-form-label text-md-right">User Name/Email</label>
+                                            <div class="col-md-8">
+                                                <input type="text" id="email_address" class="form-control" name="email-address" required autofocus>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-md-6 offset-md-4">
-                                            <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#registerModal" class="btn btn-link pl-0 pt-0">
-                                                Click here to register!
-                                            </a>
+                                        <div class="form-group row">
+                                            <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+                                            <div class="col-md-8">
+                                                <input type="password" id="password" class="form-control" name="password" required>
+                                            </div>
                                         </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Login</button>
-                            </div>
+                                        <div class="form-group row pb-2 mb-0">
+                                            <div class="col-md-6 offset-md-4">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="remember"> Remember Me
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-6 offset-md-4">
+                                                <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#registerModal" class="btn btn-link pl-0 pt-0">
+                                                    Click here to register!
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" value="{{next_url|default:'/'}}" name="next" id="next" class="d-none"/>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" form="loginForm">Login</button>
+                                </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </nav>
