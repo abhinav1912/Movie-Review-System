@@ -11,6 +11,7 @@ class Movie(models.Model):
     release_date = models.DateField()
     poster_link = models.TextField()
     trailer_link = models.TextField()
+    users = models.ManyToManyField(User, related_name='favourites')
 
     def save(self, *args, **kwargs):
         self.genre = self.genre.lower()
