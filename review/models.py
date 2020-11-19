@@ -23,5 +23,5 @@ class Review(models.Model):
     date = models.DateTimeField()
     text = models.CharField(max_length=150)
     rating = models.IntegerField()
-    movie = models.ForeignKey(Movie, related_name='reviews', on_delete = models.CASCADE)
-    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    movie = models.ForeignKey(Movie, related_name='reviews', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
