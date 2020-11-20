@@ -15,19 +15,21 @@
                 </div>
                 {% if user.is_authenticated %}
                     {% if movie_favourited %}
-                        <form method="DELETE" action="/favourites/{{movie.id}}"  class="d-inline">
-                            {% csrf_token %}
-                            <div class="col-sm-6 mt-auto">
-                                <button class="btn-link btn del" id="addToFav" type = "submit"><h4 class="ml-auto" style="text-align: right;"><span id="favText">Remove from favourites</span> <i class="fas fa-heart" id="heart-icon"></i></h4></button>
-                            </div>
-                        </form>
+                        <div class="col-sm-6 mt-auto">
+                            <form method="DELETE" action="/favourites/{{movie.id}}"  class="d-inline">
+                                {% csrf_token %}
+                                
+                                    <button class="btn-link btn del float-right" id="addToFav" type = "submit"><h4 class="ml-auto" style="text-align: right;"><span id="favText">Remove from favourites</span> <i class="fas fa-heart" id="heart-icon"></i></h4></button>
+                                
+                            </form>
+                        </div>
                     {% else %}
-                        <form method="PUT" action="/favourites/{{movie.id}}" class="d-inline">
-                            {% csrf_token %}
-                            <div class="col-sm-6 mt-auto">
-                                <button class="btn-link btn" id="addToFav"><h4 class="ml-auto" style="text-align: right;"><span id="favText">Add to favourites</span> <i class="far fa-heart" id="heart-icon"></i></h4></button>
-                            </div>
-                        </form>
+                        <div class="col-sm-6 mt-auto">
+                            <form method="PUT" action="/favourites/{{movie.id}}" class="d-inline">
+                                {% csrf_token %}
+                                    <button class="btn-link btn float-right" id="addToFav"><h4 class="ml-auto" style="text-align: right;"><span id="favText">Add to favourites</span> <i class="far fa-heart" id="heart-icon"></i></h4></button>
+                            </form>
+                        </div>
                     {% endif %}
                 {% else %}
                 {% endif %}
@@ -44,7 +46,7 @@
                 <div class="col-md-8 ml-md-5 col-6">
                     <div class="overview">
                         <h3>Overview</h3>
-                        <p>{{movie.synopsis}}</p>
+                        <p>{{movie.synposis}}</p>
                     </div>
                     <div class="genre info">
                         <h5>Genres : </h5>
@@ -178,7 +180,7 @@
                 </div>			
             </div>		
         </div>	
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and movie_released %}
             <div class="row text-light mt-4">
                 <div class="col-12">
                     <button class="ml-auto btn btn-link" id="add-review" data-toggle="modal" data-target="#addReviewModal">+Add Review</button>
@@ -192,10 +194,10 @@
                                 </button>
                                 </div>
                                 <div class="modal-body">
-                                <form method="POST" action="/review/">
+                                <form method="POST" action="/review/" id="add_review_form">
                                     {% csrf_token %}
                                     <div class="form-group">
-                                        <label for="rating_val_{{review.id}}">Choose Rating</label>
+                                        <label for="rating_val">Choose Rating</label>
                                         <select class="form-control" id="rating_val" name="rating_val">
                                             <option value="1" >1</option>
                                             <option value="2">2</option>
@@ -206,7 +208,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="review_title" class="col-form-label">Review Title</label>
-                                        <input type="text" class="form-control" id="review_title" name="review_title">
+                                        <input type="text" class="form-control" id="review_title" name="review_title" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="review_text" class="col-form-label">Review Description</label>
@@ -217,8 +219,8 @@
                                 </form>
                                 </div>
                                 <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Add Review</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" form="" class="btn btn-primary">Add Review</button>
                                 </div>
                             </div>
                         </div>
@@ -236,7 +238,7 @@
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <div class="review-block-name mb-2">{{review.user.username}}</div>
-                                        <div class="review-block-date mb-2">{{review.date|date:"F d, Y"}}<br/>{{review.date|timesince}}</div>
+                                        <div class="review-block-date mb-2">{{review.date|date:"F d, Y"}}<br/>{{review.date|timesince}} ago</div>
                                         {% if user.is_authenticated and review.id in user_reviews %}
                                             <div>
                                                 <button class="btn btn-link p-0 mr-2" data-toggle="modal" data-target="#editReviewModal_{{review.id}}">Edit</button> 
@@ -257,7 +259,7 @@
                                                                 {% csrf_token %}
                                                                 <div class="modal-body">
                                                                     <div class="form-group">
-                                                                        <label for="rating-val_1">Choose Rating</label>
+                                                                        <label for="rating-val_{{review.id}}">Choose Rating</label>
                                                                         <select class="form-control" name="rating-val" id="rating-val_{{review.id}}" required>
                                                                             {% for i in '01234'|make_list %}
                                                                                 {% if review.rating == forloop.counter %}
@@ -269,12 +271,12 @@
                                                                         </select>
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label for="review_title" class="col-form-label">Review Title</label>
-                                                                        <input type="text" class="form-control" id="review_title" name="review_title" required value="{{review.title|title}}">
+                                                                        <label for="review_title_{{review.id}}" class="col-form-label">Review Title</label>
+                                                                        <input type="text" class="form-control" id="review_title_{{review.id}}" name="review_title" required value="{{review.title|title}}">
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label for="review_test" class="col-form-label">Review Description</label>
-                                                                        <textarea class="form-control" id="review_text" required name="review_text" rows="7">{{review.text}}</textarea>
+                                                                        <label for="review_text_{{review.id}}" class="col-form-label">Review Description</label>
+                                                                        <textarea class="form-control" id="review_text_{{review.id}}" required name="review_text" rows="7">{{review.text}}</textarea>
                                                                     </div>
                                                                     <input type="hidden" name="next" value="{% url 'movie' movie.id %}">
                                                                 </div>
