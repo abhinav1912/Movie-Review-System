@@ -3,7 +3,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-
+from datetime import date
 from .models import Movie, Review
 from datetime import datetime
 
@@ -11,7 +11,7 @@ def home(request):
     upcoming_movies = Movie.objects.filter(release_date__gte = datetime.date(datetime.now()))
     current_movies = Movie.objects.filter(release_date__lt = datetime.date(datetime.now()))
     context = {
-        "next_url": "/search/",
+        "next_url": "/",
         "page_url": "home",
         "upcoming_movies": upcoming_movies,
         "current_movies": current_movies.order_by('-rating', 'name')
@@ -68,16 +68,16 @@ def movie(request, id):
     reviews = Review.objects.filter(movie=movie_object)
     review_count = len(reviews)
     # is_released?
-    users_count = [0]*6
-    users_percent = [0]*6
+    users_count = [0]*5
+    users_percent = [0]*5
     for i in reviews:
-        users_count[i.rating] += 1
+        users_count[i.rating - 1] += 1
     if reviews:
-        for i in range(6):
-            users_percent[i] = users_count[i]//review_count
+        for i in range(5):
+            users_percent[i - 1] = (users_count[i - 1]//review_count) * 100
     context = {
         "movie": movie_object,
-        "movie_released": True,
+        "movie_released": movie_object.release_date < date.today(),
         "reviews": reviews,
         "users_count": users_count,
         "users_percent": users_percent
