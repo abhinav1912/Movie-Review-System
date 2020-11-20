@@ -11,6 +11,7 @@ def home(request):
     upcoming_movies = Movie.objects.filter(release_date__gte = datetime.date(datetime.now()))
     current_movies = Movie.objects.filter(release_date__lt = datetime.date(datetime.now()))
     context = {}
+    context["next_url"] = "/search/"
     context["page_url"] = "home"
     context["upcoming_movies"] = upcoming_movies
     context["current_movies"] = current_movies.order_by('-rating', 'name')
@@ -21,6 +22,7 @@ def feed(request):
 
 def search(request):
     context = {}
+    context["next_url"] = "/search/"
     context["page_url"] = "browse"
     context["movie_genres"] = list(Movie.objects.values_list('genre', flat=True).distinct().order_by('genre'))
     context["movie_languages"] = list(Movie.objects.values_list('language', flat=True).distinct().order_by('language'))
@@ -74,8 +76,8 @@ def login_request(request):
                 messages.error(request, "Invalid username or password.")
         else:
             messages.error(request, "Invalid username or password.")
-        return redirect('/')
+        return redirect(request.GET.get("next", "/"))
 
 def logout_request(request):
     logout(request)
-    return redirect("/")
+    return redirect(request.GET.get("next", "/"))
