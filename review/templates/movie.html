@@ -80,7 +80,7 @@
                     <div class="rating-block mt-3">
                         <h3 class="pb-3">Average Rating</h3>
                         {% if reviews|length > 0 %}
-                            <h2 class="bold pb-4">{{movie.rating}} <small>/ 5</small> <span class="review-count"> from {{review_count}} reviews</span></h2>
+                            <h2 class="bold pb-4">{{movie.rating}} <small>/ 5</small> <span class="review-count"> from {{reviews|length}} reviews</span></h2>
                         {% else %}
                             <h2 class="bold pb-4"><small>Unrated</small></h2>
                         {% endif %}
@@ -237,7 +237,7 @@
                                     <div class="col-sm-3">
                                         <div class="review-block-name mb-2">{{review.user.username}}</div>
                                         <div class="review-block-date mb-2">{{review.date|date:"F d, Y"}}<br/>{{review.date|timesince}}</div>
-                                        {% if review.id in user_reviews %}
+                                        {% if user.is_authenticated and review.id in user_reviews %}
                                             <div>
                                                 <button class="btn btn-link p-0 mr-2" data-toggle="modal" data-target="#editReviewModal_{{review.id}}">Edit</button> 
                                                 <form action="/review/{{review.id}}" method="DELETE" class="d-inline">

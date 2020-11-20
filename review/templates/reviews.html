@@ -19,7 +19,7 @@
                     <div class="col-lg-3 col-md-4 col-sm-12 bg-dark round-corners">
                         <div class="rating-block mt-3">
                             <h3 class="pb-3">Your Average Rating</h3>
-                            <h2 class="bold pb-4">{{average_rating}} <small>/ 5</small> <span class="review-count"> from {{total_reviews}} reviews</span></h2>
+                            <h2 class="bold pb-4">{{average_rating}} <small>/ 5</small> <span class="review-count"> from {{reviews|length}} reviews</span></h2>
                             {% for i in '01234'|make_list %}
                                 {% if average_rating >= forloop.counter %}
                                     <button type="button" class="btn btn-warning btn-sm text-light" aria-label="Left Align">
