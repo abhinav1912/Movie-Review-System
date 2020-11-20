@@ -13,14 +13,4 @@ $(document).ready(function(){
         $("#heart-icon").addClass('far');
         $("#heart-icon").removeClass('fas');
     })
-    $("#addToFav").on('click', function(){
-        if($("#addToFav").hasClass("del")){
-            $("#addToFav").removeClass("del")
-            $("#favText").text("Add To Favourites")
-        }
-        else {
-            $("#addToFav").addClass("del")
-            $("#favText").text("Remove from Favourites")
-        }
-    })
 }) 
