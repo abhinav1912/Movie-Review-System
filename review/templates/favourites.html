@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="./movie-cards.css">
+{% endblock styles %}
+ 	
+{% block content %}
+    <div class="container">
+        <h3 class="text-light mt-4 display-4" style="text-align: center;">Your Favourites</h3>
+        {% if movies|length == 0 %}
+            <h5 class="text-light mt-4" style="text-align: center;"><i>No Favourites Added</i></h5>
+        {% else %}
+            <div class="row mt-5" id="movie-grid">
+                {% for movie in  favourite_movies %}
+                    {% include "movie-card.html" %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}
+    

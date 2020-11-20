@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="./movie.css">
+    <link rel="stylesheet" href="./reviews.css">
+{% endblock styles %}
+    
+{% block content %}
+    <div class="container">
+        <div class="movie-details">
+            <div class="row text-light py-4">
+                <div class="col-sm-6">
+                    <h2 >{{movie.name|title}}</h4>
+                </div>
+                {% if user.is_authenticated %}
+                    {% if movie_favourited %}
+                        <form method="DELETE" action="/favourites/{{movie.id}}"  class="d-inline">
+                            {% csrf_token %}
+                            <div class="col-sm-6 mt-auto">
+                                <button class="btn-link btn del" id="addToFav" type = "submit"><h4 class="ml-auto" style="text-align: right;"><span id="favText">Remove from favourites</span> <i class="fas fa-heart" id="heart-icon"></i></h4></button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <form method="PUT" action="/favourites/{{movie.id}}" class="d-inline">
+                            {% csrf_token %}
+                            <div class="col-sm-6 mt-auto">
+                                <button class="btn-link btn" id="addToFav"><h4 class="ml-auto" style="text-align: right;"><span id="favText">Add to favourites</span> <i class="far fa-heart" id="heart-icon"></i></h4></button>
+                            </div>
+                        </form>
+                    {% endif %}
+                {% else %}
+                {% endif %}
+            </div>
+            <div class="row text-light">
+                <div class="col-md-3 col-6">
+                    <div class="movie-img">
+                        <img src="{{movie.poster_link}}" class="img-fluid round-corners modal-img">
+                    </div>
+                    <div style="text-align: center;" class="mt-3">
+                        <a href="{{movie.trailer_link}}"><i class="fas fa-play"></i>&nbspPlay trailer</a>
+                    </div>
+                </div>
+                <div class="col-md-8 ml-md-5 col-6">
+                    <div class="overview">
+                        <h3>Overview</h3>
+                        <p>{{movie.synopsis}}</p>
+                    </div>
+                    <div class="genre info">
+                        <h5>Genres : </h5>
+                        <p>{{movie.genre|title}}</p> 
+                    </div>
+                    <div class="languages info">
+                        <h5>Languages : </h5>
+                        <p>{{movie.language|title}}</p> 
+                    </div>
+                    <div class="release-year info">
+                        <h5>Release Date : </h5>
+                        <p>{{movie.release_date}}</p> 
+                    </div>
+                    <div class="countries info">
+                        <h5>Country : </h5>
+                        <p>{{movie.Country|title}}</p> 
+                    </div>
+                    <div class="status info">
+                        <h5>Status : </h5>
+                        {% if movie_released %}
+                            <p>Released</p>
+                        {% else %}
+                            <p>Unreleased</p>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="rating-info">
+            <div class="row mt-4 text-light">
+                <div class="col-lg-3 col-md-4 col-sm-12 bg-dark round-corners">
+                    <div class="rating-block mt-3">
+                        <h3 class="pb-3">Average Rating</h3>
+                        {% if reviews|length > 0 %}
+                            <h2 class="bold pb-4">{{movie.rating}} <small>/ 5</small> <span class="review-count"> from {{review_count}} reviews</span></h2>
+                        {% else %}
+                            <h2 class="bold pb-4"><small>Unrated</small></h2>
+                        {% endif %}
+                        {% for i in '01234'|make_list %}
+                            {% if movie.rating >= forloop.counter %}
+                                <button type="button" class="btn btn-warning btn-sm text-light" aria-label="Left Align">
+                                    <i class="far fa-star" aria-hidden="true"></i>
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-default btn-grey btn-sm text-dark" aria-label="Left Align">
+                                    <span class="far fa-star" aria-hidden="true"></span>
+                                </button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-12 bg-dark round-corners">
+                    <div class="mt-3"><h4>Rating breakdown</h4></div>
+                    <div class="row">
+                        <div class="col-xl-1 col-2">
+                            <p class="mb-0 mt-2">5 star</p>
+                        </div>
+                        <div class="col-xl-9 col-8 align-items-center">
+                            <div class="progress mt-3">
+                                <div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{users_percent.4}}%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">{{users_percent.4}}%</div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="mt-2">
+                                <i class="fas fa-users"></i> {{users_count.4}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-1 col-2">
+                            <p class="mb-0 mt-2">4 star</p>
+                        </div>
+                        <div class="col-xl-9 col-8">
+                            <div class="progress mt-3">
+                                <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: {{users_percent.3}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{users_percent.3}}%</div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="mt-2">
+                                <i class="fas fa-users"></i> {{users_count.3}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-1 col-2">
+                            <p class="mb-0 mt-2">3 star</p>
+                        </div>
+                        <div class="col-xl-9 col-8">
+                            <div class="progress mt-3">
+                                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: {{users_percent.2}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{{users_percent.2}}%</div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="mt-2">
+                                <i class="fas fa-users"></i> {{users_count.2}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-1 col-2">
+                            <p class="mb-0 mt-2">2 star</p>
+                        </div>
+                        <div class="col-xl-9 col-8">
+                            <div class="progress mt-3">
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{users_percent.1}}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">{{users_percent.1}}%</div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="mt-2">
+                                <i class="fas fa-users"></i> {{users_count.1}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-1 col-2">
+                            <p class="mb-0 mt-2">1 star</p>
+                        </div>
+                        <div class="col-xl-9 col-8">
+                            <div class="progress mt-3">
+                                <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: {{users_percent.0}}%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">{{users_percent.0}}%</div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="mt-2">
+                                <i class="fas fa-users"></i> {{users_count.0}}
+                            </div>
+                        </div>
+                    </div>                
+                    <br>
+                </div>			
+            </div>		
+        </div>	
+        {% if user.is_authenticated %}
+            <div class="row text-light mt-4">
+                <div class="col-12">
+                    <button class="ml-auto btn btn-link" id="add-review" data-toggle="modal" data-target="#addReviewModal">+Add Review</button>
+                    <div class="modal fade text-dark" id="addReviewModal" tabindex="-1" role="dialog" aria-labelledby="addReviewModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="addReviewModalLabel">Add Review</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                <div class="modal-body">
+                                <form method="POST" action="/review/">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="rating_val_{{review.id}}">Choose Rating</label>
+                                        <select class="form-control" id="rating_val" name="rating_val">
+                                            <option value="1" >1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5" selected>5</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="review_title" class="col-form-label">Review Title</label>
+                                        <input type="text" class="form-control" id="review_title" name="review_title">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="review_text" class="col-form-label">Review Description</label>
+                                        <textarea class="form-control" id="review_text" name="review_text" rows="7"></textarea>
+                                    </div>
+                                    <input type="hidden" name="movie_id" value="{{movie.id}}">
+                                    <input type="hidden" name="next" value="{% url 'movie' movie.id %}">
+                                </form>
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Add Review</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+        {% endif %}
+        <div class="reviews mb-4">
+            <div class="row text-light mt-4">
+                <div class="col-12 bg-dark round-corners" id="reviews-col">
+                    {% if reviews|length > 0%}
+                        <div class="review-block">
+                            {% for review in reviews %}
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="review-block-name mb-2">{{review.user.username}}</div>
+                                        <div class="review-block-date mb-2">{{review.date|date:"F d, Y"}}<br/>{{review.date|timesince}}</div>
+                                        {% if review.id in user_reviews %}
+                                            <div>
+                                                <button class="btn btn-link p-0 mr-2" data-toggle="modal" data-target="#editReviewModal_{{review.id}}">Edit</button> 
+                                                <form action="/review/{{review.id}}" method="DELETE" class="d-inline">
+                                                    <input type="hidden" name="next" value="{% url 'movie' movie.id %}">
+                                                    <button class="btn btn-link p-0" type="submit">Delete</button>
+                                                </form> 
+                                                <div class="modal fade text-dark" id="editReviewModal_{{review.id}}" tabindex="-1" role="dialog" aria-labelledby="editReviewModalLabel_{{review.id}}" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="editReviewModalLabel_{{review.id}}">Edit Review</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <form action="/review/{{review.id}}" method="PUT">
+                                                                {% csrf_token %}
+                                                                <div class="modal-body">
+                                                                    <div class="form-group">
+                                                                        <label for="rating-val_1">Choose Rating</label>
+                                                                        <select class="form-control" name="rating-val" id="rating-val_{{review.id}}" required>
+                                                                            {% for i in '01234'|make_list %}
+                                                                                {% if review.rating == forloop.counter %}
+                                                                                    <option value="{{forloop.counter}}" selected>{{forloop.counter}}</option>
+                                                                                {% else %}
+                                                                                    <option value="{{forloop.counter}}">{{forloop.counter}}</option>
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="review_title" class="col-form-label">Review Title</label>
+                                                                        <input type="text" class="form-control" id="review_title" name="review_title" required value="{{review.title|title}}">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="review_test" class="col-form-label">Review Description</label>
+                                                                        <textarea class="form-control" id="review_text" required name="review_text" rows="7">{{review.text}}</textarea>
+                                                                    </div>
+                                                                    <input type="hidden" name="next" value="{% url 'movie' movie.id %}">
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-primary">Edit Review</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <div class="review-block-rate">
+                                            {% for i in '01234'|make_list %}
+                                                {% if review.rating >= forloop.counter %}
+                                                    <button type="button" class="btn btn-warning btn-xs text-light" aria-label="Left Align">
+                                                        <i class="far fa-star" aria-hidden="true"></i>
+                                                    </button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-default btn-grey btn-xs text-dark" aria-label="Left Align">
+                                                        <span class="far fa-star" aria-hidden="true"></span>
+                                                    </button>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <p class="review-rating ml-2">{{review.rating}}/5.0</p>
+                                        </div>
+                                        <div class="review-block-title text-light">{{review.title|title}}</div>
+                                        <div class="review-block-description">{{review.text}}</div>
+                                    </div>
+                                </div>
+                                <hr/>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <h3 class="text-center p-4">No reviews yet</h3>
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script src="./movie.js"></script>
+{% endblock %}
+
+

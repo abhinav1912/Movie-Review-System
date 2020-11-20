@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="./reviews.css">
+{% endblock styles %}
+
+
+
+
+{% block content %}
+    <div class="container">
+        <h4 class="text-light display-4 mt-3" style="text-align: center;">Your Reviews</h4>
+        {% if reviews|length == 0 %}
+            <h4 class="text-light mt-5" style="text-align: center;"><i>No reviews available</i></h4>
+        {% else %}
+            <div class="rating-info">
+                <div class="row mt-4 text-light">
+                    <div class="col-lg-3 col-md-4 col-sm-12 bg-dark round-corners">
+                        <div class="rating-block mt-3">
+                            <h3 class="pb-3">Your Average Rating</h3>
+                            <h2 class="bold pb-4">{{average_rating}} <small>/ 5</small> <span class="review-count"> from {{total_reviews}} reviews</span></h2>
+                            {% for i in '01234'|make_list %}
+                                {% if average_rating >= forloop.counter %}
+                                    <button type="button" class="btn btn-warning btn-sm text-light" aria-label="Left Align">
+                                        <i class="far fa-star" aria-hidden="true"></i>
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-default btn-grey btn-sm text-dark" aria-label="Left Align">
+                                        <span class="far fa-star" aria-hidden="true"></span>
+                                    </button>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-12 bg-dark round-corners">
+                        <div class="mt-3"><h4>Rating breakdown</h4></div>
+                        <div class="row">
+                            <div class="col-xl-1 col-2">
+                                <p class="mb-0 mt-2">5 star</p>
+                            </div>
+                            <div class="col-xl-9 col-8 align-items-center">
+                                <div class="progress mt-3">
+                                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ratings_percent.4}}%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.4}}%</div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="mt-2">
+                                    <i class="fas fa-users"></i> {{rating_counts.4}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-1 col-2">
+                                <p class="mb-0 mt-2">4 star</p>
+                            </div>
+                            <div class="col-xl-9 col-8">
+                                <div class="progress mt-3">
+                                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: {{ratings_percent.3}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.3}}%</div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="mt-2">
+                                    <i class="fas fa-users"></i> {{rating_counts.3}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-1 col-2">
+                                <p class="mb-0 mt-2">3 star</p>
+                            </div>
+                            <div class="col-xl-9 col-8">
+                                <div class="progress mt-3">
+                                    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: {{ratings_percent.2}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.2}}%</div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="mt-2">
+                                    <i class="fas fa-users"></i> {{rating_counts.2}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-1 col-2">
+                                <p class="mb-0 mt-2">2 star</p>
+                            </div>
+                            <div class="col-xl-9 col-8">
+                                <div class="progress mt-3">
+                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{ratings_percent.1}}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.1}}%</div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="mt-2">
+                                    <i class="fas fa-users"></i> {{rating_counts.1}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-1 col-2">
+                                <p class="mb-0 mt-2">1 star</p>
+                            </div>
+                            <div class="col-xl-9 col-8">
+                                <div class="progress mt-3">
+                                    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: {{ratings_percent.0}}%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.0}}%</div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="mt-2">
+                                    <i class="fas fa-users"></i> {{rating_counts.0}}
+                                </div>
+                            </div>
+                        </div>                
+                        <br>
+                    </div>			
+                </div>		
+            </div>
+            <div class="reviews mb-4">
+                <div class="row text-light mt-4">
+                    <div class="col-12 bg-dark round-corners" id="reviews-col">
+                        <div class="review-block">
+                            {% for review in reviews %}
+                                <div class="row">
+                                    <div class="col-sm-3"> 
+                                        <div class="review-block-name mb-2"><a href="{% url 'movie' review.movie.id %}">{{review.movie.name|title}}</a></div>
+                                        <div class="review-block-date mb-2">{{review.date|date:"F d, Y"}}<br/>{{review.date|timesince}}</div>
+                                        <div>
+                                            <button class="btn btn-link p-0 mr-2" data-toggle="modal" data-target="#editReviewModal_{{review.id}}">Edit</button> 
+                                            <form action="/review/{{review.id}}" method="DELETE" class="d-inline">
+                                                <input type="hidden" name="next" value="/reviews/">
+                                                <button class="btn btn-link p-0" type="submit">Delete</button>
+                                            </form> 
+                                            <div class="modal fade text-dark" id="editReviewModal_{{review.id}}" tabindex="-1" role="dialog" aria-labelledby="editReviewModalLabel_{{review.id}}" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                        <h5 class="modal-title" id="editReviewModalLabel_{{review.id}}">Edit Review</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                        </div>
+                                                        <form action="/review/{{review.id}}" method="PUT">
+                                                            {% csrf_token %}
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <label for="rating-val_1">Choose Rating</label>
+                                                                    <select class="form-control" name="rating_val" id="rating-val_{{review.id}}" required>
+                                                                        {% for i in '01234'|make_list %}
+                                                                            {% if review.rating == forloop.counter %}
+                                                                                <option value="{{forloop.counter}}" selected>{{forloop.counter}}</option>
+                                                                            {% else %}
+                                                                                <option value="{{forloop.counter}}">{{forloop.counter}}</option>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="review_title_{{review.id}}" class="col-form-label">Review Title</label>
+                                                                    <input type="text" class="form-control" id="review_title_{{review.id}}" name="review_title" required value="{{review.title|title}}">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="review_test_{{review.id}}" class="col-form-label">Review Description</label>
+                                                                    <textarea class="form-control" id="review_text_{{review.id}}" required name="review_text" rows="7">{{review.text}}</textarea>
+                                                                </div>
+                                                                <input type="hidden" name="next" value="/reviews/">
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Edit Review</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <div class="review-block-rate">
+                                            {% for i in '01234'|make_list %}
+                                                {% if review.rating >= forloop.counter %}
+                                                    <button type="button" class="btn btn-warning btn-xs text-light" aria-label="Left Align">
+                                                        <i class="far fa-star" aria-hidden="true"></i>
+                                                    </button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-default btn-grey btn-xs text-dark" aria-label="Left Align">
+                                                        <span class="far fa-star" aria-hidden="true"></span>
+                                                    </button>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <p class="review-rating ml-2">{{review.rating}}/5.0</p>
+                                        </div>
+                                        <div class="review-block-title text-light">{{review.title|title}}</div>
+                                        <div class="review-block-description">{{review.text}}</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}
