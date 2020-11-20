@@ -4,28 +4,31 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
-from .models import Movie
+from .models import Movie, Review
 from datetime import datetime
 
 def home(request):
     upcoming_movies = Movie.objects.filter(release_date__gte = datetime.date(datetime.now()))
     current_movies = Movie.objects.filter(release_date__lt = datetime.date(datetime.now()))
-    context = {}
-    context["next_url"] = "/search/"
-    context["page_url"] = "home"
-    context["upcoming_movies"] = upcoming_movies
-    context["current_movies"] = current_movies.order_by('-rating', 'name')
+    context = {
+        "next_url": "/search/",
+        "page_url": "home",
+        "upcoming_movies": upcoming_movies,
+        "current_movies": current_movies.order_by('-rating', 'name')
+    }
     return render(request, "index.html", context)
 
 def feed(request):
     return HttpResponse("<h1>Feed</h1>")
 
 def search(request):
-    context = {}
-    context["next_url"] = "/search/"
-    context["page_url"] = "browse"
-    context["movie_genres"] = list(Movie.objects.values_list('genre', flat=True).distinct().order_by('genre'))
-    context["movie_languages"] = list(Movie.objects.values_list('language', flat=True).distinct().order_by('language'))
+    context = {
+        "next_url": "/search/",
+        "page_url": "browse",
+        "movie_genres": list(Movie.objects.values_list('genre', flat=True).distinct().order_by('genre')),
+        "movie_languages": list(
+                   Movie.objects.values_list('language', flat=True).distinct().order_by('language'))
+    }
     if request.method == "GET":
         context["searched_movies"] = Movie.objects.all().order_by('name')
         context["search_form"] = {}
@@ -61,7 +64,25 @@ def search(request):
         return render(request, "search.html", context)
 
 def movie(request, id):
-    return HttpResponse("<h1>Movie Page</h1>")
+    movie_object = Movie.objects.filter(id=id)[0]
+    reviews = Review.objects.filter(movie=movie_object)
+    review_count = len(reviews)
+    # is_released?
+    users_count = [0]*6
+    users_percent = [0]*6
+    for i in reviews:
+        users_count[i.rating] += 1
+    if reviews:
+        for i in range(6):
+            users_percent[i] = users_count[i]//review_count
+    context = {
+        "movie": movie_object,
+        "movie_released": True,
+        "reviews": reviews,
+        "users_count": users_count,
+        "users_percent": users_percent
+    }
+    return render(request, "movie.html", context)
 
 def login_request(request):
     if request.method == 'GET':

@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block styles %}
-    <link rel="stylesheet" href="./movie.css">
-    <link rel="stylesheet" href="./reviews.css">
+    <link rel="stylesheet" href="{% static 'css/movie.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reviews.css' %}">
 {% endblock styles %}
     
 {% block content %}
@@ -11,7 +11,7 @@
         <div class="movie-details">
             <div class="row text-light py-4">
                 <div class="col-sm-6">
-                    <h2 >{{movie.name|title}}</h4>
+                    <h2 >{{movie.name|title}}</h2>
                 </div>
                 {% if user.is_authenticated %}
                     {% if movie_favourited %}
@@ -60,7 +60,7 @@
                     </div>
                     <div class="countries info">
                         <h5>Country : </h5>
-                        <p>{{movie.Country|title}}</p> 
+                        <p>{{movie.country|title}}</p>
                     </div>
                     <div class="status info">
                         <h5>Status : </h5>
@@ -323,7 +323,7 @@
 {% endblock content %}
 
 {% block scripts %}
-    <script src="./movie.js"></script>
+    <script src="{% static 'js/movie.js' %}"></script>
 {% endblock %}
 
 
