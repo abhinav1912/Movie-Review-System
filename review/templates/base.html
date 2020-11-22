@@ -89,7 +89,7 @@
                                             {% else %}
                                             {% endif %}
                                         {% endfor %}
-                                        <form action="/register" method="POST" id="registerForm">
+                                        <form action="/register/" method="POST" id="registerForm"> {% csrf_token %}
                                             <div class="form-group row">
                                                 <label for="first_name" class="col-md-4 col-form-label text-md-right">First Name</label>
                                                 <div class="col-md-8">

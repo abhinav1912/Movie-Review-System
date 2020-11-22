@@ -1,12 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from datetime import date
+from datetime import date, datetime
 from .models import Movie, Review
 from django.utils import timezone
-from datetime import datetime
 
 def home(request):
     upcoming_movies = list(Movie.objects.filter(release_date__gte = datetime.date(datetime.now())))
@@ -116,7 +116,7 @@ def add_review(request):
         new_review = Review(
             title=title,
             text=text,
-            date=timezone.now(),
+            date=datetime.now(),
             rating=rating,
             movie=Movie.objects.filter(id=movie_id)[0],
             user=request.user
@@ -185,7 +185,33 @@ def delete_favourites(request):
             return redirect('/')
     else:
         return redirect('/')
-        
+
+def register(request):
+    if request.method == "POST":
+        params = request.POST
+        first_name = params.get('first-name', '')
+        last_name = params.get('last-name', '')
+        email = params.get('email-address', '')
+        username = params.get('user-id', '')
+        password = params.get('password', '')
+        cnf_password = params.get('cnf-password', '')
+        if not (
+            password != cnf_password
+            or User.objects.filter(username=username).count()
+            or User.objects.filter(email=email).count()
+        ):
+            new_user = User(
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                username=username,
+                password=password
+            )
+            new_user.save()
+            login(request, new_user)
+        print("WORKING")
+        return redirect(params.get('next', '/'))
+
 def login_request(request):
     if request.method == 'GET':
         form = AuthenticationForm(request=request, data=request.GET)
