@@ -19,7 +19,7 @@
                     <div class="col-lg-3 col-md-4 col-sm-12 bg-dark round-corners">
                         <div class="rating-block mt-3">
                             <h3 class="pb-3">Your Average Rating</h3>
-                            <h2 class="bold pb-4">{{average_rating}} <small>/ 5</small> <span class="review-count"> from {{reviews|length}} reviews</span></h2>
+                            <h2 class="bold pb-4">{{average_rating}} <small>/ 5.0</small> <span class="review-count"> from {{reviews|length}} reviews</span></h2>
                             {% for i in '01234'|make_list %}
                                 {% if average_rating >= forloop.counter %}
                                     <button type="button" class="btn btn-warning btn-sm text-light" aria-label="Left Align">
@@ -41,7 +41,7 @@
                             </div>
                             <div class="col-xl-9 col-8 align-items-center">
                                 <div class="progress mt-3">
-                                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ratings_percent.4}}%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.4}}%</div>
+                                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ratings_percent.4}}%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.4|floatformat:1}}%</div>
                                 </div>
                             </div>
                             <div class="col-2">
@@ -56,7 +56,7 @@
                             </div>
                             <div class="col-xl-9 col-8">
                                 <div class="progress mt-3">
-                                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: {{ratings_percent.3}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.3}}%</div>
+                                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: {{ratings_percent.3}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.3|floatformat:1}}%</div>
                                 </div>
                             </div>
                             <div class="col-2">
@@ -71,7 +71,7 @@
                             </div>
                             <div class="col-xl-9 col-8">
                                 <div class="progress mt-3">
-                                    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: {{ratings_percent.2}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.2}}%</div>
+                                    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: {{ratings_percent.2}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.2|floatformat:1}}%</div>
                                 </div>
                             </div>
                             <div class="col-2">
@@ -86,7 +86,7 @@
                             </div>
                             <div class="col-xl-9 col-8">
                                 <div class="progress mt-3">
-                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{ratings_percent.1}}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.1}}%</div>
+                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{ratings_percent.1}}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.1|floatformat:1}}%</div>
                                 </div>
                             </div>
                             <div class="col-2">
@@ -101,7 +101,7 @@
                             </div>
                             <div class="col-xl-9 col-8">
                                 <div class="progress mt-3">
-                                    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: {{ratings_percent.0}}%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.0}}%</div>
+                                    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: {{ratings_percent.0}}%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">{{ratings_percent.0|floatformat:1}}%</div>
                                 </div>
                             </div>
                             <div class="col-2">
@@ -186,14 +186,16 @@
                                                     </button>
                                                 {% endif %}
                                             {% endfor %}
-                                            <p class="review-rating ml-2">{{review.rating}}/5.0</p>
+                                            <p class="review-rating ml-2">{{review.rating}}/5</p>
                                         </div>
                                         <div class="review-block-title text-light">{{review.title|title}}</div>
                                         <div class="review-block-description">{{review.text}}</div>
                                     </div>
                                 </div>
+                                <hr/>
                             {% endfor %}
                         </div>
+                        
                     </div>
                 </div>
             </div>

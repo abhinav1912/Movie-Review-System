@@ -27,7 +27,7 @@
                         <div class="release">Release Date:  {{movie.release_date}}</div><br>
                         <div class="overview">{{movie.synposis|truncatewords:25}}...</div><br>
                         {% if movie.rating != 0 %}
-                            <div class="rating"><em><strong>Rating: {{movie.rating}}/5</strong></em></div><br>
+                            <div class="rating"><em><strong>Rating: {{movie.rating|floatformat:1}}/5</strong></em></div><br>
                         {% else %}
                             <div class="rating"><em><strong>Rating: Unrated</strong></em></div><br>
                         {% endif %}

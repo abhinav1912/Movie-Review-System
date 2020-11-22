@@ -5,10 +5,13 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from datetime import date
 from .models import Movie, Review
+from django.utils import timezone
 from datetime import datetime
 
 def home(request):
-    upcoming_movies = Movie.objects.filter(release_date__gte = datetime.date(datetime.now()))
+    upcoming_movies = list(Movie.objects.filter(release_date__gte = datetime.date(datetime.now())))
+    if len(upcoming_movies) > 3:
+        upcoming_movies = upcoming_movies[:3]
     current_movies = Movie.objects.filter(release_date__lt = datetime.date(datetime.now()))
     context = {
         "next_url": "/",
@@ -74,14 +77,23 @@ def movie(request, id):
         users_count[i.rating - 1] += 1
     if reviews:
         for i in range(5):
-            users_percent[i - 1] = (users_count[i - 1]//review_count) * 100
+            users_percent[i - 1] = (users_count[i - 1]/review_count) * 100
+    user_reviews = []
+    movie_favourited = False
+    if request.user.is_authenticated:
+        user_reviews = [tup[0] for tup in request.user.review_set.values_list('pk').distinct()]        
+        movie_favourited = len(request.user.favourites.filter(pk = id)) != 0
     context = {
         "movie": movie_object,
         "movie_released": movie_object.release_date < date.today(),
         "reviews": reviews,
         "users_count": users_count,
-        "users_percent": users_percent
+        "users_percent": users_percent,
+        "user_reviews": user_reviews,
+        "movie_favourited": movie_favourited,
+        "page_url": "browse"
     }
+    print(timezone.now())
     return render(request, "movie.html", context)
 
 def add_review(request):
@@ -104,36 +116,76 @@ def add_review(request):
         new_review = Review(
             title=title,
             text=text,
-            date=date.today(),
+            date=timezone.now(),
             rating=rating,
             movie=Movie.objects.filter(id=movie_id)[0],
             user=request.user
         )
         new_review.save()
-        return redirect(params.get('next'))
+        return redirect(params.get('next', "/"))
 
 def get_all_reviews(request):
-    if not request.user:
+    if not request.user.is_authenticated:
         return redirect(request.GET.get("next", "/"))
     rating_counts, ratings_percent = [0]*5, [0]*5
     list_of_reviews = Review.objects.filter(user=request.user)
-    average_rating, count = 0, len(list_of_reviews)
-    for i in list_of_reviews:
-        average_rating += i.rating
-        rating_counts[i.rating - 1] += 1
-    for i in range(5):
-        ratings_percent = (rating_counts[i]/count)*100
-    average_rating = (average_rating/count) if count else 0
+    average_rating, count = 0.0, len(list_of_reviews)
+    if count > 0:
+        for i in list_of_reviews:
+            average_rating += i.rating
+            rating_counts[i.rating - 1] += 1
+        for i in range(5):
+            ratings_percent[i] = (rating_counts[i]/count)*100
+        average_rating = (average_rating/count)
     if len(str(average_rating))>3:
         average_rating = float(str(average_rating)[:3])
     context = {
         "average_rating": average_rating,
         "rating_counts": rating_counts,
         "ratings_percent": ratings_percent,
-        "reviews": list_of_reviews
+        "reviews": list_of_reviews,
+        "page_url": "reviews"
     }
     return render(request, 'reviews.html', context)
 
+def all_favourites(request):
+    if not request.user.is_authenticated:
+        return redirect('/')
+    context = {
+        "favourite_movies": list(request.user.favourites.all()),
+        "page_url": "favourites"
+    }
+    return render(request, 'favourites.html', context)
+
+def add_favourites(request):
+    if request.method == "POST" and request.user.is_authenticated:
+        movie_id = request.POST.get('movie_id', '')
+        movie_obj = Movie.objects.filter(pk=movie_id)
+        # request.user.favourites.add()
+        if len(movie_obj) > 0:
+            if len(request.user.favourites.filter(pk=movie_id)) == 0:
+                request.user.favourites.add(movie_obj[0])
+                request.user.save()
+            return redirect('/movie/{a}'.format(a=movie_id))
+        else:    
+            return redirect('/')
+    else:
+        return redirect('/')
+
+def delete_favourites(request):
+    if request.method == "POST" and request.user.is_authenticated:
+        movie_id = request.POST.get('movie_id', '')
+        movie_obj = Movie.objects.filter(pk=movie_id)
+        if len(movie_obj) > 0:
+            if len(request.user.favourites.filter(pk=movie_id)) != 0:
+                request.user.favourites.remove(movie_obj[0])
+                request.user.save()
+            return redirect('/movie/{a}'.format(a=movie_id))
+        else:    
+            return redirect('/')
+    else:
+        return redirect('/')
+        
 def login_request(request):
     if request.method == 'GET':
         form = AuthenticationForm(request=request, data=request.GET)
@@ -144,9 +196,9 @@ def login_request(request):
             if user is not None:
                 login(request, user)
             else:
-                messages.error(request, "Invalid username or password.")
+                messages.add_message(request, 100, "Invalid username or password.")
         else:
-            messages.error(request, "Invalid username or password.")
+            messages.add_message(request, 100, "Invalid username or password.")
         return redirect(request.GET.get("next", "/"))
 
 def logout_request(request):
