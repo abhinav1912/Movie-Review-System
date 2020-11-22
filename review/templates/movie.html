@@ -194,7 +194,7 @@
                                 </button>
                                 </div>
                                 <div class="modal-body">
-                                <form method="POST" action="/review/" id="add_review_form">
+                                <form method="POST" action="review/" id="add_review_form">
                                     {% csrf_token %}
                                     <div class="form-group">
                                         <label for="rating_val">Choose Rating</label>
@@ -220,7 +220,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" form="" class="btn btn-primary">Add Review</button>
+                                    <button type="submit" form="add_review_form" class="btn btn-primary">Add Review</button>
                                 </div>
                             </div>
                         </div>

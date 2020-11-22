@@ -84,6 +84,56 @@ def movie(request, id):
     }
     return render(request, "movie.html", context)
 
+def add_review(request):
+    if request.method == "POST":
+        params = request.POST
+        rating = int(params.get('rating_val', [0])[0])
+        title = params.get('review_title', 'None')
+        text = params.get('review_text', 'None')
+        movie_id = int(params.get('movie_id', ['0'])[0])
+        movie_object = Movie.objects.filter(id=movie_id)[0]
+        reviews = Review.objects.filter(movie=movie_object)
+        review_count = len(reviews)
+        new_rating = (review_count*movie_object.rating + rating)/(review_count+1)
+        if len(str(new_rating))>3:
+            new_rating = float(str(new_rating)[:3])
+        old_obj, new_obj = Movie.objects.update_or_create(
+            id=movie_id,
+            defaults={'rating': new_rating}
+        )
+        new_review = Review(
+            title=title,
+            text=text,
+            date=date.today(),
+            rating=rating,
+            movie=Movie.objects.filter(id=movie_id)[0],
+            user=request.user
+        )
+        new_review.save()
+        return redirect(params.get('next'))
+
+def get_all_reviews(request):
+    if not request.user:
+        return redirect(request.GET.get("next", "/"))
+    rating_counts, ratings_percent = [0]*5, [0]*5
+    list_of_reviews = Review.objects.filter(user=request.user)
+    average_rating, count = 0, len(list_of_reviews)
+    for i in list_of_reviews:
+        average_rating += i.rating
+        rating_counts[i.rating - 1] += 1
+    for i in range(5):
+        ratings_percent = (rating_counts[i]/count)*100
+    average_rating = (average_rating/count) if count else 0
+    if len(str(average_rating))>3:
+        average_rating = float(str(average_rating)[:3])
+    context = {
+        "average_rating": average_rating,
+        "rating_counts": rating_counts,
+        "ratings_percent": ratings_percent,
+        "reviews": list_of_reviews
+    }
+    return render(request, 'reviews.html', context)
+
 def login_request(request):
     if request.method == 'GET':
         form = AuthenticationForm(request=request, data=request.GET)
