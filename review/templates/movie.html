@@ -243,7 +243,7 @@
                                         {% if user.is_authenticated and review.id in user_reviews %}
                                             <div>
                                                 <button class="btn btn-link p-0 mr-2" data-toggle="modal" data-target="#editReviewModal_{{review.id}}">Edit</button> 
-                                                <form action="/review/{{review.id}}" method="DELETE" class="d-inline">
+                                                <form action="/review/{{review.id}}" method="GET" class="d-inline">
                                                     <input type="hidden" name="next" value="{% url 'movie' movie.id %}">
                                                     <button class="btn btn-link p-0" type="submit">Delete</button>
                                                 </form> 
@@ -256,7 +256,7 @@
                                                                     <span aria-hidden="true">&times;</span>
                                                                 </button>
                                                             </div>
-                                                            <form action="/review/{{review.id}}" method="PUT">
+                                                            <form action="/review/{{review.id}}" method="POST">
                                                                 {% csrf_token %}
                                                                 <div class="modal-body">
                                                                     <div class="form-group">

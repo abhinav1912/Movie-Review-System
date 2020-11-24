@@ -112,10 +112,10 @@ def add_review(request):
             user=request.user
         )
         new_review.save()
-        update_rating(movie_id)
+        update_rating(request, movie_id)
         return redirect(params.get('next', "/"))
 
-def update_rating(movie_id):
+def update_rating(request, movie_id):
     movie_object = Movie.objects.filter(id=movie_id)
     movie_object = movie_object[0]
     reviews = Review.objects.filter(movie=movie_object)
@@ -159,11 +159,12 @@ def modify_review(request, id):
     review = Review.objects.filter(id=id)[0]
     movie_object = review.movie
     movie_id = movie_object.id
-    params = QueryDict(request.body)
-    if request.method == "DELETE":
+    if request.method == "GET":
+        params = request.GET
         review = Review.objects.get(id=id)
         review.delete()
     elif request.method == "POST":
+        params = request.POST
         rating = int(params.get('rating_val', [0])[0])
         title = params.get('review_title', 'None')
         text = params.get('review_text', 'None')
@@ -178,7 +179,7 @@ def modify_review(request, id):
             }
         )
     try:
-        update_rating(movie_id)
+        update_rating(request, movie_id)
     except Exception as error:
         print(str(error))
     return redirect(params.get('next', "/"))
