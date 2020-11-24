@@ -156,7 +156,10 @@ def get_all_reviews(request):
     return render(request, 'reviews.html', context)
 
 def modify_review(request, id):
-    review = Review.objects.filter(id=id)[0]
+    review = Review.objects.filter(id=id)
+    if not len(review):
+        return redirect("/")
+    review = review[0]
     movie_object = review.movie
     movie_id = movie_object.id
     if request.method == "GET":
@@ -168,13 +171,11 @@ def modify_review(request, id):
         rating = int(params.get('rating_val', [0])[0])
         title = params.get('review_title', 'None')
         text = params.get('review_text', 'None')
-        movie_id = int(params.get('movie_id', ['0'])[0])
         old_obj, new_obj = Review.objects.update_or_create(
             id=id,
             defaults={
                 "title": title,
                 "text": text,
-                "date": datetime.now(),
                 "rating": rating,
             }
         )
@@ -231,11 +232,13 @@ def register(request):
         username = params.get('user-id', '')
         password = params.get('password', '')
         cnf_password = params.get('cnf-password', '')
-        if not (
-            password != cnf_password
-            or User.objects.filter(username=username).count()
-            or User.objects.filter(email=email).count()
-        ):
+        if (not username) or (not password):
+            messages.add_message(request, 120, "Please enter all details!")
+        elif User.objects.filter(username=username).count() or User.objects.filter(email=email).count():
+            messages.add_message(request, 120, "Given username/email already exists!")
+        elif password != cnf_password:
+            messages.add_message(request, 120, "Passwords don't match")
+        else:
             new_user = User(
                 first_name=first_name,
                 last_name=last_name,

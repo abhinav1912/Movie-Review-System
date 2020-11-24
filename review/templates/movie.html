@@ -260,8 +260,8 @@
                                                                 {% csrf_token %}
                                                                 <div class="modal-body">
                                                                     <div class="form-group">
-                                                                        <label for="rating-val_{{review.id}}">Choose Rating</label>
-                                                                        <select class="form-control" name="rating-val" id="rating-val_{{review.id}}" required>
+                                                                        <label for="rating_val_{{review.id}}">Choose Rating</label>
+                                                                        <select class="form-control" name="rating_val" id="rating_val_{{review.id}}" required>
                                                                             {% for i in '01234'|make_list %}
                                                                                 {% if review.rating == forloop.counter %}
                                                                                     <option value="{{forloop.counter}}" selected>{{forloop.counter}}</option>
