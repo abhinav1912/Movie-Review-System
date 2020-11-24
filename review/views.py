@@ -67,7 +67,10 @@ def search(request):
         return render(request, "search.html", context)
 
 def movie(request, id):
-    movie_object = Movie.objects.filter(id=id)[0]
+    movie_object = Movie.objects.filter(id=id)
+    if not len(movie_object):
+        return redirect('/')
+    movie_object = movie_object[0]
     reviews = Review.objects.filter(movie=movie_object)
     review_count = len(reviews)
     # is_released?
@@ -91,9 +94,9 @@ def movie(request, id):
         "users_percent": users_percent,
         "user_reviews": user_reviews,
         "movie_favourited": movie_favourited,
-        "page_url": "browse"
+        "page_url": "browse",
+        "next_url": "/movie/{a}".format(a=id)
     }
-    print(timezone.now())
     return render(request, "movie.html", context)
 
 def add_review(request):
