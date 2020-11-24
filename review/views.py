@@ -239,7 +239,7 @@ def register(request):
         elif password != cnf_password:
             messages.add_message(request, 120, "Passwords don't match")
         else:
-            new_user = User(
+            new_user = User.objects.create_user(
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
