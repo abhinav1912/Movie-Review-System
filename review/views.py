@@ -3,7 +3,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, QueryDict
 from datetime import date, datetime
 from .models import Movie, Review
 from django.utils import timezone
@@ -103,16 +103,6 @@ def add_review(request):
         title = params.get('review_title', 'None')
         text = params.get('review_text', 'None')
         movie_id = int(params.get('movie_id', ['0'])[0])
-        movie_object = Movie.objects.filter(id=movie_id)[0]
-        reviews = Review.objects.filter(movie=movie_object)
-        review_count = len(reviews)
-        new_rating = (review_count*movie_object.rating + rating)/(review_count+1)
-        if len(str(new_rating))>3:
-            new_rating = float(str(new_rating)[:3])
-        old_obj, new_obj = Movie.objects.update_or_create(
-            id=movie_id,
-            defaults={'rating': new_rating}
-        )
         new_review = Review(
             title=title,
             text=text,
@@ -122,7 +112,24 @@ def add_review(request):
             user=request.user
         )
         new_review.save()
+        update_rating(movie_id)
         return redirect(params.get('next', "/"))
+
+def update_rating(movie_id):
+    movie_object = Movie.objects.filter(id=movie_id)
+    movie_object = movie_object[0]
+    reviews = Review.objects.filter(movie=movie_object)
+    review_count = len(reviews)
+    if not review_count:
+        new_rating = 0.0
+    else:
+        new_rating = sum(i.rating for i in reviews) / review_count
+        if len(str(new_rating)) > 3:
+            new_rating = float(str(new_rating)[:3])
+    old_obj, new_obj = Movie.objects.update_or_create(
+        id=movie_id,
+        defaults={'rating': new_rating}
+    )
 
 def get_all_reviews(request):
     if not request.user.is_authenticated:
@@ -147,6 +154,34 @@ def get_all_reviews(request):
         "page_url": "reviews"
     }
     return render(request, 'reviews.html', context)
+
+def modify_review(request, id):
+    review = Review.objects.filter(id=id)[0]
+    movie_object = review.movie
+    movie_id = movie_object.id
+    params = QueryDict(request.body)
+    if request.method == "DELETE":
+        review = Review.objects.get(id=id)
+        review.delete()
+    elif request.method == "POST":
+        rating = int(params.get('rating_val', [0])[0])
+        title = params.get('review_title', 'None')
+        text = params.get('review_text', 'None')
+        movie_id = int(params.get('movie_id', ['0'])[0])
+        old_obj, new_obj = Review.objects.update_or_create(
+            id=id,
+            defaults={
+                "title": title,
+                "text": text,
+                "date": datetime.now(),
+                "rating": rating,
+            }
+        )
+    try:
+        update_rating(movie_id)
+    except Exception as error:
+        print(str(error))
+    return redirect(params.get('next', "/"))
 
 def all_favourites(request):
     if not request.user.is_authenticated:
