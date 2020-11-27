@@ -101,7 +101,7 @@ def movie(request, id):
     return render(request, "movie.html", context)
 
 def add_review(request):
-    if not user.is_authenticated:
+    if not request.user.is_authenticated:
         return redirect('/')
     if request.method == "POST":
         params = request.POST
@@ -112,7 +112,7 @@ def add_review(request):
         new_review = Review(
             title=title,
             text=text,
-            date=datetime.now(),
+            date=timezone.now(),
             rating=rating,
             movie=Movie.objects.filter(id=movie_id)[0],
             user=request.user
