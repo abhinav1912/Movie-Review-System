@@ -97,37 +97,41 @@
                                             <div class="form-group row">
                                                 <label for="first_name" class="col-md-4 col-form-label text-md-right">First Name</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" id="first_name" class="form-control" name="first-name" required autofocus>
+                                                    <input type="text" id="first_name" class="form-control" name="first-name" autofocus>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="last_name" class="col-md-4 col-form-label text-md-right">Last Name</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" id="last_name" class="form-control" name="last-name" required autofocus>
+                                                    <input type="text" id="last_name" class="form-control" name="last-name">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="email_address" class="col-md-4 col-form-label text-md-right">Email Address</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" id="email_address" class="form-control" name="email-address" required autofocus>
+                                                    <input type="text" id="email_address" class="form-control" name="email-address" required>
+                                                    <p class="text-danger mb-0" id="email_alert"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="user_id" class="col-md-4 col-form-label text-md-right">User Name</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" id="user_id" class="form-control" name="user-id" required autofocus>
+                                                    <input type="text" id="user_id" class="form-control" name="user-id" required>
+                                                    <p class="text-danger  mb-0" id="username_alert"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="r_password" class="col-md-4 col-form-label text-md-right">Password</label>
                                                 <div class="col-md-8">
                                                     <input type="password" id="r_password" class="form-control" name="password" required>
+                                                    <p class="text-danger  mb-0" id="password_alert"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="cnf_password" class="col-md-4 col-form-label text-md-right">Confirm Password</label>
                                                 <div class="col-md-8">
                                                     <input type="password" id="cnf_password" class="form-control" name="cnf-password" required>
+                                                    <p class="text-danger mb-0" id="cnf_alert"></p>
                                                 </div>
                                             </div>
                                             <input type="hidden" value="{{next_url|default:'/'}}" name="next" class="d-none"/>
@@ -135,7 +139,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary" form="registerForm">Register</button>
+                                        <button type="submit" class="btn btn-primary" id="registerButton">Register</button>
                                     </div>
                                 </div>
                             </div>

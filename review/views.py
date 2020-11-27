@@ -10,6 +10,7 @@ from django.utils import timezone
 
 def home(request):
     upcoming_movies = list(Movie.objects.filter(release_date__gte = datetime.date(datetime.now())))
+    upcoming_movies.sort(key=lambda x : x.release_date)
     if len(upcoming_movies) > 3:
         upcoming_movies = upcoming_movies[:3]
     current_movies = Movie.objects.filter(release_date__lt = datetime.date(datetime.now()))
@@ -100,6 +101,8 @@ def movie(request, id):
     return render(request, "movie.html", context)
 
 def add_review(request):
+    if not user.is_authenticated:
+        return redirect('/')
     if request.method == "POST":
         params = request.POST
         rating = int(params.get('rating_val', [0])[0])
@@ -159,6 +162,8 @@ def get_all_reviews(request):
     return render(request, 'reviews.html', context)
 
 def modify_review(request, id):
+    if not request.user.is_authenticated:
+        return redirect(request.GET.get("next", "/"))
     review = Review.objects.filter(id=id)
     if not len(review):
         return redirect("/")
@@ -256,6 +261,7 @@ def register(request):
 
 def login_request(request):
     if request.method == 'GET':
+        remember_me = request.GET.get("remember", False) == "on"
         form = AuthenticationForm(request=request, data=request.GET)
         if form.is_valid():
             username = form.cleaned_data.get('username')
@@ -263,6 +269,8 @@ def login_request(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
+                if not remember_me:
+                    request.session.set_expiry(0)
             else:
                 messages.add_message(request, 100, "Invalid username or password.")
         else:
