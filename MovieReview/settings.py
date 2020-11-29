@@ -79,12 +79,12 @@ WSGI_APPLICATION = 'MovieReview.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
+        'ENGINE': '',
         'CLIENT': {
-            'name': 'MovieRatingsApp',
-            'host': 'mongodb+srv://project_admin:dtukmkb1@cluster0.ofc9b.mongodb.net/Reviews?retryWrites=true&w=majority',
-            'username': 'project_admin',
-            'password': 'dtukmkb1',
+            'name': '',
+            'host': '',
+            'username': '',
+            'password': '',
         }
     }
 }
